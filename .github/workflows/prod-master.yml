@@ -46,7 +46,7 @@ jobs:
             git pull
             git checkout master
             cd K8s/
-            versions=$(cat ../../versions.json)
+            versions=$(cat ../versions.json)
             readarray -t versions <<< "$(echo "$versions" | jq -r 'to_entries | .[] | "MICROSERVICE_\(.key | ascii_upcase)=\(.value)"')"; for v in "${versions[@]}"; do export "$v"; done
             envsubst < bramil.yml > bramil_prod_ready.yml
             microk8s kubectl apply -f bramil_prod_ready.yml

@@ -54,12 +54,12 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "20m"
 spec:
   ingressClassName: nginx
-  tls:
-  - hosts:
-    - "gigs.joseenrique.dev"
-    secretName: joseenrique-cert-com-prod
+  # tls:
+  # - hosts:
+  #   - "gigs.joseenrique.dev"
+  #   secretName: joseenrique-cert-com-prod
   rules:
-    - host: gigs.joseenrique.dev
+    - host: joseenrique.dev
       http:
         paths:
           - path: /bramil

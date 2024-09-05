@@ -62,7 +62,7 @@ spec:
     - host: apidev.wepromolink.com
       http:
         paths:
-          - path: /bramil
+          - path: /
             pathType: Prefix
             backend:
               service:

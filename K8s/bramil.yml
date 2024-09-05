@@ -1,0 +1,71 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bramil-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bramil-app
+  template:
+    metadata:
+      labels:
+        app: bramil-app
+    spec:
+      imagePullSecrets:
+      - name: dockerhub-secret
+      containers:
+        - name: bramil-container
+          image: cod4it/gig.bramil:$MICROSERVICE_BRAMIL
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: my-pro-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bramil-service
+spec:
+  selector:
+    app: bramil-app
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+      name: http
+    - port: 443
+      protocol: TCP
+      targetPort: 443
+      name: https
+  type: ClusterIP  # Cambia esto según el tipo de servicio que desees
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-bramil
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    # nginx.ingress.kubernetes.io/whitelist-source-range: "170.75.168.146/32"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - "*.joseenrique.dev"
+    secretName: joseenrique-cert-com-prod
+  rules:
+    - host: gigs.joseenrique.dev
+      http:
+        paths:
+          - path: /bramil
+            pathType: Prefix
+            backend:
+              service:
+                name: bramil-service
+                port:
+                  number: 80

@@ -8,7 +8,7 @@ builder.Services.AddTransient<CommonService>();
 var app = builder.Build();
 app.MapHealthChecks("/health");
 app.UseCors("MyCORSPolicy");
-app.MapPost("/",([FromForm] string? action, HttpContext ctx, CommonService service) =>
+app.MapPost("/",(string? action, HttpContext ctx, CommonService service) =>
 {
     IResult result = action switch
         {

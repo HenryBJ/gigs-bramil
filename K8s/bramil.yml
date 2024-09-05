@@ -59,7 +59,7 @@ spec:
   #   - "gigs.joseenrique.dev"
   #   secretName: joseenrique-cert-com-prod
   rules:
-    - host: joseenrique.dev
+    - host: apidev.wepromolink.com
       http:
         paths:
           - path: /bramil

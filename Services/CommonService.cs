@@ -10,7 +10,7 @@ public class CommonService
     public CommonService(IConfiguration config, ILogger<CommonService> logger)
     {
         _config = config;
-        _logger = logger; 
+        _logger = logger;
     }
 
     public IResult ExecuteCommand(
@@ -22,8 +22,11 @@ public class CommonService
         var results = new List<Dictionary<string, object>>();
 
         var form = ctx.Request.Form;
+        string? testConnectionString = form["test_connection_string"];
+
         string? server = form["server"];
-        string? connectionString = _config.GetConnectionString(server ?? "DefaultConnection");
+        string? connectionString = String.IsNullOrEmpty(testConnectionString) ?
+        _config.GetConnectionString(server ?? "DefaultConnection") : testConnectionString;
 
         using (SqlConnection conn = new SqlConnection(connectionString))
         {
@@ -52,7 +55,7 @@ public class CommonService
             }
             finally
             {
-                conn.Close(); 
+                conn.Close();
             }
         }
         return PrepareOutput != null ? PrepareOutput.Invoke(results) : Results.Ok(results);

@@ -39,7 +39,7 @@ public class LotteryController : ControllerBase
     [HttpPost("SavePlays")]
     public IResult SavePlays([FromForm] string? test_connection_string, [FromForm] string Banking_name, [FromForm] string Username, [FromForm] string json)
     {
-        var result = _service.ExecuteCommand("EXEC [dbo].[SavePlays]  @Banking_name =? , @Username = ?,@json=?;", HttpContext, cmd =>
+        var result = _service.ExecuteCommand("EXEC [dbo].[SavePlays]  @Banking_name, @Username, @json;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("json", json));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", Username));
@@ -52,7 +52,7 @@ public class LotteryController : ControllerBase
     [HttpPost("GetResults")]
     public IResult GetResults([FromForm] string? test_connection_string, [FromForm] string Banking_name, [FromForm] string Username, [FromForm] string dateSelected)
     {
-        var result = _service.ExecuteCommand("EXEC [dbo].[GetResults]  @banking_name =? , @Username = ?,@dateSelected=?;", HttpContext, cmd =>
+        var result = _service.ExecuteCommand("EXEC [dbo].[GetResults]  @banking_name, @Username, @dateSelected;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("dateSelected", dateSelected));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", Username));
@@ -65,7 +65,7 @@ public class LotteryController : ControllerBase
     [HttpPost("GetNumbersMatch")]
     public IResult GetNumbersMatch([FromForm] string? test_connection_string, [FromForm] string Banking_name, [FromForm] string Username, [FromForm] string dateSelected)
     {
-        var result = _service.ExecuteCommand("EXEC [dbo].[GetNumbersMatch]  @banking_name =? , @Username = ?,@dateSelected=?;", HttpContext, cmd =>
+        var result = _service.ExecuteCommand("EXEC [dbo].[GetNumbersMatch]  @banking_name, @Username, @dateSelected;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("dateSelected", dateSelected));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", Username));
@@ -78,7 +78,7 @@ public class LotteryController : ControllerBase
     [HttpPost("DuplicateTicket")]
     public IResult DuplicateTicket([FromForm] string? test_connection_string, [FromForm] string ticket_number)
     {
-        var result = _service.ExecuteCommand("EXEC [dbo].[duplicateTicket] @ticketId =?;", HttpContext, cmd =>
+        var result = _service.ExecuteCommand("EXEC [dbo].[duplicateTicket] @ticketId;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("ticketId", ticket_number));
         }, output => Results.Ok(new { plays = output }));
@@ -90,7 +90,7 @@ public class LotteryController : ControllerBase
     public IResult GetWinningsNumbers([FromForm] string? test_connection_string, [FromForm] string dateSelected, [FromForm] string username, [FromForm] string Banking_name)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetWinningNumbers] @banking_name =?, @Username = ?,@dateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetWinningNumbers] @banking_name, @Username, @dateSelected;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("dateSelected", dateSelected));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
@@ -103,7 +103,7 @@ public class LotteryController : ControllerBase
     public IResult GetTickets([FromForm] string? test_connection_string, [FromForm] string dateSelected, [FromForm] string username, [FromForm] string Banking_name)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetTickets] @banking_name =?, @Username = ?,@dateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetTickets] @banking_name, @Username, @dateSelected;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("dateSelected", dateSelected));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
@@ -119,7 +119,7 @@ public class LotteryController : ControllerBase
         var issuer = _config["Jwt:Issuer"];
         var keyBytes = Encoding.ASCII.GetBytes(key);
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[CheckLogin] @username =?, @password = ?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[CheckLogin] @username, @password;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("username", username));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("password", password));
@@ -177,7 +177,7 @@ public class LotteryController : ControllerBase
     public IResult DeleteTicket([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string ticketId)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[deleteTicketByTime] @idTicket =?, @Username = ?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[deleteTicketByTime] @idTicket, @Username;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("username", username));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("idTicket", ticketId));
@@ -189,7 +189,7 @@ public class LotteryController : ControllerBase
     public IResult SeeTicketPlays([FromForm] string? test_connection_string, [FromForm] string ticketId)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[seeTicketPlays] @ticketId =?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[seeTicketPlays] @ticketId;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("ticketId", ticketId));
         }, output => Results.Ok(new { plays = output }));
@@ -200,7 +200,7 @@ public class LotteryController : ControllerBase
     public IResult GetSaleHistory([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string fromDateSelected, [FromForm] string endDateSelected)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetSaleHistory] @banking_name =?, @Username = ?,@fromDateSelected=?, @endDateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetSaleHistory] @banking_name, @Username, @fromDateSelected, @endDateSelected;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("username", username));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("banking_name", Banking_name));
@@ -221,7 +221,7 @@ public class LotteryController : ControllerBase
     public IResult ShowBankings([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string dateSelected)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[ShowBankings] @banking_name =?, @Username = ?,@dateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[ShowBankings] @banking_name, @Username, @dateSelected;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("banking_name", Banking_name));
@@ -234,7 +234,7 @@ public class LotteryController : ControllerBase
     public IResult GetMonitoring([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string dateSelected, [FromForm] string lottery, [FromForm] string option)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetMonitoring] @banking_name =?, @Username = ?,@dateSelected=?,@lottery=?,@option=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetMonitoring] @banking_name, @Username, @dateSelected, @lottery, @option;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("banking_name", Banking_name));
@@ -249,7 +249,7 @@ public class LotteryController : ControllerBase
     public IResult GetResultsByProfile([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string dateSelected)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetResultsByProfile] @Username = ?,@dateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetResultsByProfile] @Username, @dateSelected;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("dateSelected", dateSelected));
@@ -262,7 +262,7 @@ public class LotteryController : ControllerBase
     public IResult GetAllResults([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string dateSelected)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetAllResults] @banking_name =? , @Username = ?,@dateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetAllResults] @banking_name, @Username, @dateSelected;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("banking_name", Banking_name));
@@ -275,7 +275,7 @@ public class LotteryController : ControllerBase
     public IResult UploadNumbers([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string dateSelected, [FromForm] string numbers)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[UploadNumbers]  @Banking_name =? , @Username = ?,@dateSelected=?, @json=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[UploadNumbers]  @Banking_name, @Username, @dateSelected, @json;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("json", numbers));
@@ -289,7 +289,7 @@ public class LotteryController : ControllerBase
     public IResult ShowWorkGroup([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string supervisor)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[ShowWorkGroup] @supervisor =?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[ShowWorkGroup] @supervisor;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("banking_name", Banking_name));
@@ -302,7 +302,7 @@ public class LotteryController : ControllerBase
     public IResult ShowBankingByProfile([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string supervisor, [FromForm] string group_work)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[ShowBankingByProfile] @supervisor=?,@group_work=?,@profile=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[ShowBankingByProfile] @supervisor, @group_work, @profile;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("banking_name", Banking_name));
@@ -316,7 +316,7 @@ public class LotteryController : ControllerBase
     public IResult GetAllResultsByWorkGroup([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string dateSelected, [FromForm] string group_work)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetAllResultsByWorkGroup] @banking_name =? , @Username = ?,@dateSelected=?,@group_work=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetAllResultsByWorkGroup] @banking_name, @Username, @dateSelected, @group_work;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("banking_name", Banking_name));
@@ -330,7 +330,7 @@ public class LotteryController : ControllerBase
     public IResult UpdateTickedStatusV2([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string Banking_name, [FromForm] string ticketId, [FromForm] string stateValue)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[UpdateTickedStatusV2] @TickedId =? , @user = ?,@newState=?,@Banking_name=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[UpdateTickedStatusV2] @TickedId, @user, @newState, @Banking_name;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("user", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Banking_name", Banking_name));
@@ -357,7 +357,7 @@ public class LotteryController : ControllerBase
     public IResult SaveReciboCompletivo([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string recolector, [FromForm] string monto, [FromForm] string comentario)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[ReportarCompletivo] @username=?, @recolector=?, @monto_entregado=?, @comentario=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[ReportarCompletivo] @username, @recolector, @monto_entregado, @comentario;", HttpContext, cmd =>
         {
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("username", username));
             cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("recolector", recolector));
@@ -371,7 +371,7 @@ public class LotteryController : ControllerBase
     public IResult GetAccountingByRange([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string fromDateSelected, [FromForm] string endDateSelected, [FromForm] string Banking_name)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetAccountingByRange] @banking_name =? , @Username = ?,@fromDateSelected=?, @endDateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetAccountingByRange] @banking_name, @Username, @fromDateSelected, @endDateSelected;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("fromDateSelected", fromDateSelected));
@@ -385,7 +385,7 @@ public class LotteryController : ControllerBase
     public IResult GetPremiosByRange([FromForm] string? test_connection_string, [FromForm] string username, [FromForm] string fromDateSelected, [FromForm] string endDateSelected, [FromForm] string Banking_name)
     {
         var form = HttpContext.Request.Form;
-        return _service.ExecuteCommand("EXEC [dbo].[GetPremiosByRange] @banking_name =? , @Username = ?,@fromDateSelected=?, @endDateSelected=?;", HttpContext, cmd =>
+        return _service.ExecuteCommand("EXEC [dbo].[GetPremiosByRange] @banking_name, @Username, @fromDateSelected, @endDateSelected;", HttpContext, cmd =>
             {
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("Username", username));
                 cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter("fromDateSelected", fromDateSelected));

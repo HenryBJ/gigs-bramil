@@ -56,8 +56,8 @@ builder.Services.AddAuthentication(x =>
     {
          ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-        ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ValidIssuer = issuer,
         ValidAudience = issuer
     };
